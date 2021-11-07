@@ -34,10 +34,48 @@ public class UIManager : Singleton<NetworkManagerTCP> {
     /// </summary>
     private Text _mKeyboardOutput;
 
-    public List<GameObject> views;
-    #endregion
+    /// <summary>
+    /// Displays all navigation destinations as child object toggle buttons
+    /// </summary>
+    [SerializeField]
+    private GameObject navigationItems;
 
-    public void refreshConnectionStatus()  {
+    /// <summary>
+    /// 
+    /// </summary>
+    [SerializeField]
+    private GameObject navigationToggleButton;
+
+    public List<GameObject> views;
+        #endregion
+
+    private void Start() {
+        OscReceiveHandler.OnDestinationsReceived += OscReceiveHandler_OnDestinationsReceived;    
+    }
+    private void OnDestroy() {
+        OscReceiveHandler.OnDestinationsReceived -= OscReceiveHandler_OnDestinationsReceived;
+    }
+
+    private void OscReceiveHandler_OnDestinationsReceived(OscReceiveHandler.oscArgs args) {
+        var destinations = args.msg.Values;
+        var startingX = 325f;
+        var startingY = 200f;
+        var stepX = 325f;
+        var stepY = 130f;
+        var row = 1;
+        var column = 1;
+        foreach (var item in destinations)
+        {
+            var dest = item.StringValue;
+            var pos = new Vector3(startingX, startingY, 0);
+            var go = Instantiate(navigationToggleButton, navigationItems.transform);
+            go.transform.position = pos;
+        }
+    }
+
+    
+
+    public void refreshConnectionStatus() {
         _mTCPStatus.text = NetworkManagerTCP.Instance.getConnectionStatus();
         _mOscStatus.text = "Status check not implemented";
     }

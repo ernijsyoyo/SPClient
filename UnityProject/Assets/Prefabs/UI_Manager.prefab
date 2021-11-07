@@ -2553,6 +2553,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mMainPanel: {fileID: 0}
   _mNetworkMenu: {fileID: 5534140353691045043}
+  navigationItems: {fileID: 1600036769}
+  navigationToggleButton: {fileID: 3125466460954088444, guid: 496146b2c0eb344cfa5029a7fff2acc2, type: 3}
   views:
   - {fileID: 5588737612954783278}
   - {fileID: 5534140353691045043}
