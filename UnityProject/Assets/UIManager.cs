@@ -33,6 +33,8 @@ public class UIManager : Singleton<NetworkManagerTCP> {
     /// UI elemement that displays currently set values from the numberpad
     /// </summary>
     private Text _mKeyboardOutput;
+
+    public List<GameObject> views;
     #endregion
 
     public void refreshConnectionStatus()  {
@@ -52,7 +54,7 @@ public class UIManager : Singleton<NetworkManagerTCP> {
         }
     }
 
-    public string getEndpPoint() { return _mEndPoint.text; }
+    public string getEndpPointText() { return _mEndPoint.text; }
 
     public void setEndPoint() {
         var endPointValue = _mEndPoint.text;
@@ -85,6 +87,16 @@ public class UIManager : Singleton<NetworkManagerTCP> {
         int port = 0;
         int.TryParse(endPoint[1], out port);
         return new Tuple<string, int>(ip, port);
+    }
+
+    public void changeView(string viewName)
+    {
+        foreach (var item in views) {
+            if (item.name != viewName)
+                item.SetActive(false);
+            else
+                item.SetActive(true);
+        }
     }
 }
 } // end of namespace

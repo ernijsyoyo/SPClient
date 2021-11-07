@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using extOSC;
 using UnityEngine;
 
-public abstract class OSCReceiveHandler : MonoBehaviour
+public abstract class OSCReceiveBase : MonoBehaviour
 {
     public string Address = "/example";
 
