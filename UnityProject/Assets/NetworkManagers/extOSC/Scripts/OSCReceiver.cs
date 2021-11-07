@@ -368,6 +368,11 @@ namespace extOSC
 			return _localHostMode == OSCLocalHostMode.Any ? "0.0.0.0" : _localHost;
 		}
 
-		#endregion
-	}
+        public void Bind(string address, object receivedMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

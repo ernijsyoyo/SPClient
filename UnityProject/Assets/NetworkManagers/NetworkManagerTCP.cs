@@ -40,8 +40,17 @@ namespace SP
 		void Start()
 		{
 			print("TCP Endpoint: " + ipAddress + ":" + port);
-			ConnectToTcpServer();
+			ConnectToTcpServer(ipAddress, port);
 		}
+
+		public string getConnectionStatus()
+        {
+			if (socketConnection.Connected)
+			{
+				return "Connected " + socketConnection.Client.RemoteEndPoint.ToString();
+			}
+			else return "Not Connected";
+        }
 
 		private void Update()
 		{
@@ -51,11 +60,23 @@ namespace SP
 				sendTestMessage();
 			}
 		}
+
+		/// <summary>
+        /// Immediately stops the TCP data listening thread and set TcpClient to null
+        /// </summary>
+		public void disconnectTcp()
+        {
+			clientReceiveThread.Abort();
+			socketConnection = null;
+        }
+
 		/// <summary> 	
 		/// Setup socket connection. 	
 		/// </summary> 	
-		private void ConnectToTcpServer()
+		public void ConnectToTcpServer(string ip, int port)
 		{
+			this.ipAddress = ip;
+			this.port = port;
 			try
 			{
 				clientReceiveThread = new Thread(new ThreadStart(ListenForData));
@@ -110,7 +131,7 @@ namespace SP
 			if (socketConnection == null)
 			{
 				print("Socket connection is null, attempting to reconnect..");
-				ConnectToTcpServer();
+				ConnectToTcpServer(ipAddress, port);
 			}
 			sendStringMessage("Dipshit TCP");
 		}
