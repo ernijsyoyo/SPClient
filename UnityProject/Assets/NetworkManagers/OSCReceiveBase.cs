@@ -5,7 +5,10 @@ using UnityEngine;
 
 public abstract class OSCReceiveBase : MonoBehaviour
 {
-    public string Address = "/example";
+	public List<string> addresses = new List<string>()
+	{
+		Constants.OSC_GUIDE, Constants.OSC_REC_DEST
+	};
 
 	[Header("OSC Settings")]
 	public OSCReceiver Receiver;
@@ -13,7 +16,10 @@ public abstract class OSCReceiveBase : MonoBehaviour
 
 	protected virtual void Start()
 	{
-		Receiver.Bind(Address, ReceivedMessage);
+        foreach (var address in addresses) {
+			Receiver.Bind(address, ReceivedMessage);
+		}
+		print("Receiver bound");
 	}
 
 	public virtual void ReceivedMessage(OSCMessage message)

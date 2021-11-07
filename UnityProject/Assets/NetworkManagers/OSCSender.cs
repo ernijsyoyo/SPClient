@@ -20,7 +20,7 @@ public class OSCSender : MonoBehaviour
     /// </summary>
     /// <param name="address"></param>
     /// <param name="msg"></param>
-	public void sendString(string address, string msg) {
+	public static void sendString(string address, string msg) {
 		var message = new OSCMessage(address);
 		message.AddValue(OSCValue.String(msg));
 		Transmitter.Send(message);
@@ -36,6 +36,15 @@ public class OSCSender : MonoBehaviour
 		message.AddValue(OSCValue.Float(y));
 		message.AddValue(OSCValue.Float(z));
 
+		Transmitter.Send(message);
+	}
+
+	public static void sendList(string address, List<string> ts)
+    {
+		var message = new OSCMessage(address);
+        foreach (var item in ts) {
+			message.AddValue(OSCValue.String(item));
+		}
 		Transmitter.Send(message);
 	}
 }
