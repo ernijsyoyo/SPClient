@@ -24,7 +24,7 @@ public class UIManager : Singleton<NetworkManagerTCP> {
     /// <summary>
     /// UI element that denotes the current status of OSC connection
     /// </summary>
-    private Text _mOscStatus;
+    [SerializeField] private Text _mOscStatus;
     /// <summary>
     /// UI element that denotes to which endpoint a socket will be opened
     /// </summary>
@@ -33,28 +33,50 @@ public class UIManager : Singleton<NetworkManagerTCP> {
     /// UI elemement that displays currently set values from the numberpad
     /// </summary>
     private Text _mKeyboardOutput;
-
     /// <summary>
     /// Displays all navigation destinations as child object toggle buttons
     /// </summary>
     [SerializeField]
     private GameObject navigationItems;
-
     /// <summary>
-    /// 
+    /// Issues the navigation request for selected destinations
     /// </summary>
     [SerializeField]
     private GameObject navigationToggleButton;
-
+    /// <summary>
+    /// Holds references for all views
+    /// </summary>
     public List<GameObject> views = new List<GameObject>();
-    public List<Toggle> destToggles = new List<Toggle>();
+    /// <summary>
+    /// Holds references to toggle buttons for each destination
+    /// </summary>
+    private List<Toggle> destToggles = new List<Toggle>();
     #endregion
 
     private void Start() {
-        OscReceiveHandler.OnDestinationsReceived += OscReceiveHandler_OnDestinationsReceived;    
+        OscReceiveHandler.OnDestinationsReceived += OscReceiveHandler_OnDestinationsReceived;
+        OSCSender.sendString(Constants.OSC_GET_DEST, "true");
+            setOscStatus();
+
     }
     private void OnDestroy() {
         OscReceiveHandler.OnDestinationsReceived -= OscReceiveHandler_OnDestinationsReceived;
+    }
+
+    private void togglePanel() {
+
+    }
+
+
+    private void setOscStatus() {
+        var trans = FindObjectOfType<extOSC.OSCTransmitter>();
+        var rec = FindObjectOfType<extOSC.OSCReceiver>();
+
+        _mOscStatus.text = String.Format("Rec {0}:{1}; Trans {2}:{3}",
+                                            rec.LocalHost,
+                                            rec.LocalPort,
+                                            trans.RemoteHost,
+                                            trans.RemotePort);
     }
 
 
@@ -102,6 +124,12 @@ public class UIManager : Singleton<NetworkManagerTCP> {
     }
 
     public void issueNavigation() {
+        // Reinitialize toggles if there are none..
+        if(destToggles.Count == 0){
+            OSCSender.sendString(Constants.OSC_GET_DEST, "true");
+            return;
+        }
+
         var outputDestinations = new List<string>();
         foreach (var dest in destToggles) {
             if (dest.isOn) {

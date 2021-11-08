@@ -6,13 +6,14 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class OSCSender : MonoBehaviour
 {
+	private static OSCTransmitter _transmitter;
 	public static OSCTransmitter Transmitter {
 		get {
-			if (Transmitter == null)
-				Transmitter = FindObjectOfType<OSCTransmitter>();
-			return Transmitter;
+			if (_transmitter == null)
+				_transmitter = FindObjectOfType<OSCTransmitter>();
+			return _transmitter;
 		}
-		set { Transmitter = value; }
+		set { _transmitter = value; }
 		}
 
 	/// <summary>
