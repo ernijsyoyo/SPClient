@@ -51,20 +51,41 @@ public class UIManager : Singleton<NetworkManagerTCP> {
     /// Holds references to toggle buttons for each destination
     /// </summary>
     private List<Toggle> destToggles = new List<Toggle>();
-    #endregion
+        #endregion
+
+    public bool test;
 
     private void Start() {
         OscReceiveHandler.OnDestinationsReceived += OscReceiveHandler_OnDestinationsReceived;
+        OscReceiveHandler.OnNavigationReceived += OscReceiveHandler_OnNavigationReceived;
         OSCSender.sendString(Constants.OSC_GET_DEST, "true");
-            setOscStatus();
-
+        setOscStatus();
     }
+
+    private void Update()
+    {
+        if(test)
+        {
+            test = false;
+            togglePanel();
+        }
+    }
+
+
+
     private void OnDestroy() {
         OscReceiveHandler.OnDestinationsReceived -= OscReceiveHandler_OnDestinationsReceived;
+        OscReceiveHandler.OnNavigationReceived -= OscReceiveHandler_OnNavigationReceived;
     }
 
     private void togglePanel() {
+        // Put the panel 1m infront of the user
+        gameObject.transform.position = Camera.main.transform.position
+                                            + Camera.main.transform.forward;
+        gameObject.transform.LookAt(Camera.main.transform);
 
+        // Set the main panel to the opposite state
+        _mMainPanel.SetActive(!_mMainPanel.activeInHierarchy);
     }
 
 
@@ -80,6 +101,10 @@ public class UIManager : Singleton<NetworkManagerTCP> {
     }
 
 
+    private void OscReceiveHandler_OnNavigationReceived(OscReceiveHandler.oscArgs args) {
+        // Handle navigation
+        print(args.msg);
+    }
     private void OscReceiveHandler_OnDestinationsReceived(OscReceiveHandler.oscArgs args) {
         // Clear children to prevent double objects
         foreach (Transform child in navigationItems.transform)
