@@ -25,6 +25,10 @@ public class Constants : MonoBehaviour
     /// </summary>
     public const string OSC_SET_DEST = "/setDestinations";
     /// <summary>
+    /// Destinations received from python
+    /// </summary>
+    public const string OSC_DEST = "/destinations";
+    /// <summary>
     /// Address to which Unity receives guidance directions
     /// </summary>
     public const string OSC_GUIDE = "/guidanceDirection";

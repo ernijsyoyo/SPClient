@@ -160,15 +160,16 @@ namespace MagicLeap
                 if(marker.Id == 49) {
                     GlobalOrigin.setPosition(marker.Position);
                     GlobalOrigin.setRot(marker.Rotation);
+
+                    GameObject arucoMarker = Instantiate(MLArucoMarkerPrefab);
+                    MLArucoTrackerBehavior arucoBehavior = arucoMarker.GetComponent<MLArucoTrackerBehavior>();
+                    arucoBehavior.MarkerId = marker.Id;
+                    arucoBehavior.MarkerDictionary = MLArucoTracker.TrackerSettings.Dictionary;
+                    _arucoMarkerIds.Add(marker.Id);
                 }
 
                 // Configure visualization of the markers and TrackingBehaviour for export
                 // TODO Upon export make sure that positions are exported relative to the global position
-                GameObject arucoMarker = Instantiate(MLArucoMarkerPrefab);
-                MLArucoTrackerBehavior arucoBehavior = arucoMarker.GetComponent<MLArucoTrackerBehavior>();
-                arucoBehavior.MarkerId = marker.Id;
-                arucoBehavior.MarkerDictionary = MLArucoTracker.TrackerSettings.Dictionary;
-                _arucoMarkerIds.Add(marker.Id);
             }
             // When marker exits the view remove from currently tracked dictionary
             else if(_arucoMarkerIds.Contains(marker.Id))
