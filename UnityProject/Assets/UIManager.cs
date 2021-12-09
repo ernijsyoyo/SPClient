@@ -253,10 +253,16 @@ namespace SP {
 
         public void setDestinations()
         {
+      
+            var startLocation = TransformConversions.posRelativeTo(GlobalOrigin.getTransform(), _mUser.transform);
+            var destination = "11";
+            var destination2 = "4";
+
             print("Starting to send destinations...");
-            var startLocation = TransformConversions.posRelativeTo(GlobalOrigin.getPosition(), _mUser.transform.position);
-            var destination = "1";
-            var destination2 = "2";
+            print("Global origin: " + GlobalOrigin.getTransform().position);
+            print("User position: " + _mUser.transform.position);
+            print("Relative position: " + startLocation);
+
 
             var msg = new OSCMessage(Constants.OSC_SET_DEST);
             msg.AddValue(OSCValue.String(startLocation.ToString()));

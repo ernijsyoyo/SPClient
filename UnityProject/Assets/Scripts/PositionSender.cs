@@ -25,8 +25,10 @@ namespace SP
         // Update is called once per frame
         void FixedUpdate() {
             if (sendUpdates) {
-                OSCSender.sendVector3(Constants.OSC_POS, gameObject.transform.position);
-                OSCSender.sendVector3(Constants.OSC_ROT, gameObject.transform.rotation.eulerAngles);
+                var pos = TransformConversions.posRelativeTo(GlobalOrigin.getTransform(), gameObject.transform);
+                var rot = TransformConversions.rotRelativeTo(GlobalOrigin.getRot(), gameObject.transform.rotation);
+                OSCSender.sendVector3(Constants.OSC_POS, pos);
+                OSCSender.sendVector3(Constants.OSC_ROT, rot.eulerAngles);
             }
         }
     }

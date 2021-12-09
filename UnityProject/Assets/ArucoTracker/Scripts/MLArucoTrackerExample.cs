@@ -158,13 +158,14 @@ namespace MagicLeap
 
                 // Set the global origin to calibration marker's (#49) values
                 if(marker.Id == 49) {
-                    GlobalOrigin.setPosition(marker.Position);
-                    GlobalOrigin.setRot(marker.Rotation);
 
                     GameObject arucoMarker = Instantiate(MLArucoMarkerPrefab);
                     MLArucoTrackerBehavior arucoBehavior = arucoMarker.GetComponent<MLArucoTrackerBehavior>();
                     arucoBehavior.MarkerId = marker.Id;
                     arucoBehavior.MarkerDictionary = MLArucoTracker.TrackerSettings.Dictionary;
+
+                    GlobalOrigin.setTransform(arucoMarker.transform);
+                    GlobalOrigin.setRot(marker.Rotation);
                     _arucoMarkerIds.Add(marker.Id);
                 }
 
