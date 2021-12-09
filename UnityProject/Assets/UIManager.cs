@@ -105,6 +105,7 @@ namespace SP {
                 print("Trigger pressed");
                 var msg = new OSCMessage(Constants.OSC_STOP_TIMING);
                 Transmitter.Send(msg);
+                // TOGGLE START/STOP send position here!!!
                 // cleanup path
             }
         }
