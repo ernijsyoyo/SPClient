@@ -43,7 +43,7 @@ namespace SP
         public static bool setTransform(Transform newTransform)
         {
             if (posSet == false) {
-                if (counter > 25)
+                if (counter > 1)
                 {
                     Debug.Log("rotation set");
                     posSet = true;

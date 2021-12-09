@@ -34,6 +34,11 @@ namespace SP
             return _pivot.InverseTransformPoint(_origin.position);
         }
 
+        public static Vector3 invertAxisZ(Vector3 vec)
+        {
+            return new Vector3(vec.x, vec.y, -vec.z);
+        }
+
         /// <summary>
         /// Calculates an origin rotation that is relative to a pivot point's rotation
         /// </summary>

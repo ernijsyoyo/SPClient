@@ -28,6 +28,8 @@ namespace MagicLeap
         /// </summary>
         public GameObject MLArucoMarkerPrefab;
 
+        public GameObject globalOrigin;
+
         /// <summary>
         /// Hash set that contains all
         /// </summary>
@@ -36,6 +38,7 @@ namespace MagicLeap
         // For enabling/disabling ArUco tracking... TODO Do we need this?
         private bool _triggerReleased = true;
         private MLInput.Controller controller = null;
+        int lockCounter = 0;
 
         // TODO Implement a dictionary that holds marker
 
@@ -157,16 +160,20 @@ namespace MagicLeap
                 }
 
                 // Set the global origin to calibration marker's (#49) values
-                if(marker.Id == 49) {
+                if(marker.Id == 49 && lockCounter < 10) {
 
                     GameObject arucoMarker = Instantiate(MLArucoMarkerPrefab);
                     MLArucoTrackerBehavior arucoBehavior = arucoMarker.GetComponent<MLArucoTrackerBehavior>();
                     arucoBehavior.MarkerId = marker.Id;
                     arucoBehavior.MarkerDictionary = MLArucoTracker.TrackerSettings.Dictionary;
+                    globalOrigin.transform.position = marker.Position;
 
-                    GlobalOrigin.setTransform(arucoMarker.transform);
+                    GlobalOrigin.setTransform(globalOrigin.transform);
                     GlobalOrigin.setRot(marker.Rotation);
                     _arucoMarkerIds.Add(marker.Id);
+                    print(lockCounter);
+                    lockCounter += 1;
+
                 }
 
                 // Configure visualization of the markers and TrackingBehaviour for export
@@ -179,7 +186,7 @@ namespace MagicLeap
             }
 
             // Print currently tracked markers
-            SetStatusText();
+            //SetStatusText();
 #endif
         }
     }

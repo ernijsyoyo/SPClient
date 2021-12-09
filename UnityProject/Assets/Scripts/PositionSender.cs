@@ -27,6 +27,7 @@ namespace SP
             if (sendUpdates) {
                 var pos = TransformConversions.posRelativeTo(GlobalOrigin.getTransform(), gameObject.transform);
                 var rot = TransformConversions.rotRelativeTo(GlobalOrigin.getRot(), gameObject.transform.rotation);
+                pos = TransformConversions.invertAxisZ(pos);
                 OSCSender.sendVector3(Constants.OSC_POS, pos);
                 OSCSender.sendVector3(Constants.OSC_ROT, rot.eulerAngles);
             }
