@@ -32,7 +32,7 @@ public class OscReceiveHandler : OSCReceiveBase
                     var x = message.Values[i].FloatValue;
                     var y = message.Values[i + 1].FloatValue;
                     var z = message.Values[i + 2].FloatValue;
-                    var pos = new Vector3(x, y - 0.2f, -z);
+                    var pos = SP.TransformConversions.invertAxisZ(new Vector3(x, y - 0.2f, z));
                     GameObject point = Instantiate(pointerPrefab);
                     point.transform.parent = SP.GlobalOrigin.getTransform();
                     point.transform.localPosition = pos;
