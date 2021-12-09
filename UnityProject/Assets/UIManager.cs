@@ -94,16 +94,20 @@ namespace SP {
                 test = false;
                 setDestinations();
             }
-            //checkTrigger();
+            checkTrigger();
         }
 
 
-        //private void checkTrigger() {
-        //    if (_controller.TriggerValue > 0.2f) { 
-        //        var msg = new OSCMessage(Constants.OSC_STOP_TIMING);
-        //        Transmitter.Send(msg);
-        //    }
-        //}
+        private void checkTrigger()
+        {
+            if (_controller.TriggerValue > 0.2f)
+            {
+                print("Trigger pressed");
+                var msg = new OSCMessage(Constants.OSC_STOP_TIMING);
+                Transmitter.Send(msg);
+                // cleanup path
+            }
+        }
 
 
         private void OnDestroy() {

@@ -11,15 +11,17 @@ namespace SP
         private bool sendUpdates = false;
 
         private void Start() {
-            GlobalOrigin.OnOrientationSet += GlobalOrigin_OnOrientationSet;
+            OscReceiveHandler.OnDestinationsReceived += GlobalOrigin_OnOrientationSet;
+
         }
 
         void OnDestroy() {
-            GlobalOrigin.OnOrientationSet -= GlobalOrigin_OnOrientationSet;
+            OscReceiveHandler.OnDestinationsReceived -= GlobalOrigin_OnOrientationSet;
         }
 
         private void GlobalOrigin_OnOrientationSet(System.EventArgs args) {
             sendUpdates = true;
+            print("Sending position updates..");
         }
 
         // Update is called once per frame
