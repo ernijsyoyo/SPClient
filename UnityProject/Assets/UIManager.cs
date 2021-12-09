@@ -3,19 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.XR.MagicLeap;
+//using UnityEngine.XR.MagicLeap;
 using extOSC;
 namespace SP {
+    [ExecuteInEditMode]
     public class UIManager : Singleton<NetworkManagerTCP> {
         /// <summary>
         /// Reference to the Main Menu view
         /// </summary>
         [SerializeField]
         private GameObject _mMainPanel;
+        public int dest1;
+        public int dest2;
+        public int dest3;
 
         public GameObject _mUser;
         public OSCTransmitter Transmitter;
-        private MLInput.Controller _controller;
+        //private MLInput.Controller _controller;
 
         #region NetworkMenu
         /// <summary>
@@ -66,13 +70,15 @@ namespace SP {
             OscReceiveHandler.OnNavigationReceived += OscReceiveHandler_OnNavigationReceived;
             OSCSender.sendString(Constants.OSC_GET_DEST, "true");
 
+#if UNITY_LUMIN
             MLInput.OnControllerButtonDown += OnButtonDown;
             _controller = MLInput.GetController(MLInput.Hand.Left);
-
+#endif
 
             setOscStatus();
         }
 
+#if UNITY_LUMIN
         private void OnButtonDown(byte controllerId, MLInput.Controller.Button button)
         {
             print("Button pressed");
@@ -83,14 +89,26 @@ namespace SP {
             }
             
         }
+#endif
 
         private void Update()
         {
             if(test)
             {
                 test = false;
-                togglePanel();
+                setDestinations();
             }
+            checkTrigger();
+        }
+
+
+        private void checkTrigger() {
+            #if UNITY_LUMIN
+            if (_controller.TriggerValue > 0.2f) { 
+                var msg = new OSCMessage(Constants.OSC_STOP_TIMING);
+                Transmitter.Send(msg);
+            }
+            #endif
         }
 
 
@@ -98,7 +116,9 @@ namespace SP {
         private void OnDestroy() {
             OscReceiveHandler.OnDestinationsReceived -= OscReceiveHandler_OnDestinationsReceived;
             OscReceiveHandler.OnNavigationReceived -= OscReceiveHandler_OnNavigationReceived;
+            #if UNITY_LUMIN
             MLInput.OnControllerButtonDown -= OnButtonDown;
+            #endif
         }
 
         private void togglePanel() {
@@ -255,8 +275,10 @@ namespace SP {
         {
       
             var startLocation = TransformConversions.posRelativeTo(GlobalOrigin.getTransform(), _mUser.transform);
-            var destination = "11";
-            var destination2 = "4";
+            startLocation = new Vector3(startLocation.x, startLocation.y, -startLocation.z);
+            var destination = dest1.ToString();
+            var destination2 = dest2.ToString();
+            var destination3 = dest3.ToString();
 
             print("Starting to send destinations...");
             print("Global origin: " + GlobalOrigin.getTransform().position);
@@ -268,6 +290,7 @@ namespace SP {
             msg.AddValue(OSCValue.String(startLocation.ToString()));
             msg.AddValue(OSCValue.String(destination));
             msg.AddValue(OSCValue.String(destination2));
+            msg.AddValue(OSCValue.String(destination3));
 
             Transmitter.Send(msg);
             print("SetDestinations message sent to " + Transmitter.RemoteHost + ":" + Transmitter.RemotePort );

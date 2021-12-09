@@ -24,6 +24,7 @@ public class Constants : MonoBehaviour
     /// Address through which Python can be instructed of destinations to navigate to
     /// </summary>
     public const string OSC_SET_DEST = "/setDestinations";
+    public const string OSC_STOP_TIMING = "/stopTiming";
     /// <summary>
     /// Destinations received from python
     /// </summary>

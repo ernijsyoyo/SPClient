@@ -34,12 +34,13 @@ public class OscReceiveHandler : OSCReceiveBase
                     var z = message.Values[i + 2].FloatValue;
                     var pos = new Vector3(x, y, -z);
                     GameObject point = Instantiate(pointerPrefab);
-                    point.transform.position = pos;
+                    point.transform.parent = SP.GlobalOrigin.getTransform();
+                    point.transform.localPosition = pos;
 
 
 
                     if(i == 0) {
-                        point.transform.GetComponent<Renderer>().GetComponent<Material>().color = Color.green;
+                        point.transform.GetComponentInChildren<MeshRenderer>().materials[0].color = Color.green;
                         start = point;
                     }
                     else { // true after first iteration
@@ -47,10 +48,11 @@ public class OscReceiveHandler : OSCReceiveBase
                         start.transform.LookAt(end.transform);
                         start = end;
                     }
-                    point.transform.position = SP.TransformConversions.posRelativeTo(SP.GlobalOrigin.getTransform(), point.transform);
-                    point.transform.localScale = (new Vector3(0.1f, 0.1f, 0.1f));
+                    //pos = SP.TransformConversions.posRelativeTo(SP.GlobalOrigin.getTransform(), point.transform);
+                    //point.transform.position = pos;
+                    //point.transform.localScale = (new Vector3(0.1f, 0.1f, 0.1f));
                 }
-                end.transform.GetComponent<Renderer>().GetComponent<Material>().color = Color.red;
+                end.transform.GetComponentInChildren<MeshRenderer>().materials[0].color = Color.red;
                 OnDestinationsReceived?.Invoke(new oscArgs(message));
                 break;
             default:
