@@ -268,7 +268,7 @@ namespace SP {
         {
       
             var startLocation = TransformConversions.posRelativeTo(GlobalOrigin.getTransform(), _mUser.transform);
-            startLocation =  new Vector3(startLocation.x, startLocation.y, -startLocation.z);
+            startLocation = TransformConversions.invertAxisZ(startLocation);
             var destination = dest1.ToString();
             var destination2 = dest2.ToString();
             var destination3 = dest3.ToString();
