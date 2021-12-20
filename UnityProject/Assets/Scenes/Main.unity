@@ -1274,7 +1274,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5264379114971677066, guid: 3aee01e5115cb472facb6c9517647f8e, type: 3}
       propertyPath: _localHost
-      value: 192.168.1.102
+      value: 192.168.1.100
       objectReference: {fileID: 0}
     - target: {fileID: 5264379114971677066, guid: 3aee01e5115cb472facb6c9517647f8e, type: 3}
       propertyPath: _localPort
@@ -1575,6 +1575,10 @@ PrefabInstance:
       propertyPath: _mMainPanel
       value: 
       objectReference: {fileID: 7041474417978291614}
+    - target: {fileID: 890138978888911922, guid: c61ac95e7767f4a368f42265258c8f08, type: 3}
+      propertyPath: globalOrigin
+      value: 
+      objectReference: {fileID: 438076589}
     - target: {fileID: 890138978888911922, guid: c61ac95e7767f4a368f42265258c8f08, type: 3}
       propertyPath: views.Array.size
       value: 3

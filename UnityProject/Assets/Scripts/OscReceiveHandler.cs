@@ -38,7 +38,6 @@ public class OscReceiveHandler : OSCReceiveBase
                     point.transform.localPosition = pos;
 
 
-
                     if(i == 0) {
                         point.transform.GetComponentInChildren<MeshRenderer>().materials[0].color = Color.green;
                         start = point;

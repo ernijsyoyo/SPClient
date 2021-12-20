@@ -8,11 +8,10 @@ namespace SP
     {
 
         [SerializeField]
-        private bool sendUpdates = false;
+        public static bool sendUpdates = false;
 
         private void Start() {
             OscReceiveHandler.OnDestinationsReceived += GlobalOrigin_OnOrientationSet;
-
         }
 
         void OnDestroy() {

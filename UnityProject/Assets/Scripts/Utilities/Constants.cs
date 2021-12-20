@@ -25,6 +25,8 @@ public class Constants : MonoBehaviour
     /// </summary>
     public const string OSC_SET_DEST = "/setDestinations";
     public const string OSC_STOP_TIMING = "/stopTiming";
+    public const string OSC_START_TIMING = "/startTiming";
+
     /// <summary>
     /// Destinations received from python
     /// </summary>

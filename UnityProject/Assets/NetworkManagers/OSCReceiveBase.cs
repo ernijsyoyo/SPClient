@@ -19,7 +19,7 @@ public abstract class OSCReceiveBase : MonoBehaviour
         foreach (var address in addresses) {
 			Receiver.Bind(address, ReceivedMessage);
 		}
-		print("Receiver bound");
+		print("Receiver bound" + Receiver.LocalHost + ":" + Receiver.LocalPort);
 	}
 
 	public virtual void ReceivedMessage(OSCMessage message)

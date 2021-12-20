@@ -17,6 +17,7 @@ namespace SP {
         public int dest2;
         public int dest3;
 
+        public GameObject globalOrigin;
         public GameObject _mUser;
         public OSCTransmitter Transmitter;
         private MLInput.Controller _controller;
@@ -105,8 +106,23 @@ namespace SP {
                 print("Trigger pressed");
                 var msg = new OSCMessage(Constants.OSC_STOP_TIMING);
                 Transmitter.Send(msg);
-                // TOGGLE START/STOP send position here!!!
-                // cleanup path
+                PositionSender.sendUpdates = false;
+
+                // Cleanup all guidance arrows under GlobalOrigin object
+                var globalOriginChildren = globalOrigin.GetComponentInChildren<Transform>();
+                print(globalOrigin);
+                foreach (Transform child in globalOrigin.transform) {
+                    print("Looping over children");
+                    if (child.name != "Cube") {
+                        Destroy(child.gameObject);
+                    }
+                }
+            }
+
+            if (_controller.Touch1PosAndForce.z > 0.0f)
+            {
+                print("Touchpad pressed");
+                PositionSender.sendUpdates = true;
             }
         }
 
