@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
 using extOSC;
 namespace SP {
+    /// <summary>
+    /// Maanges the UI panel behaviour
+    /// </summary>
     [ExecuteInEditMode]
     public class UIManager : Singleton<NetworkManagerTCP> {
         /// <summary>
@@ -17,9 +20,21 @@ namespace SP {
         public int dest2;
         public int dest3;
 
+        /// <summary>
+        /// Game object that denotes the global point of origin
+        /// </summary>
         public GameObject globalOrigin;
+        /// <summary>
+        /// Reference to the user
+        /// </summary>
         public GameObject _mUser;
+        /// <summary>
+        /// OSC Transmitter for sending messages
+        /// </summary>
         public OSCTransmitter Transmitter;
+        /// <summary>
+        /// ML Controller
+        /// </summary>
         private MLInput.Controller _controller;
 
         #region NetworkMenu
@@ -64,43 +79,51 @@ namespace SP {
         private List<Toggle> destToggles = new List<Toggle>();
             #endregion
 
-        public bool test;
+        public bool testIssueNavigation;
 
         private void Start() {
+            // Subscribe to events
             OscReceiveHandler.OnDestinationsReceived += OscReceiveHandler_OnDestinationsReceived;
-            OscReceiveHandler.OnNavigationReceived += OscReceiveHandler_OnNavigationReceived;
-            OSCSender.sendString(Constants.OSC_GET_DEST, "true");
-
             MLInput.OnControllerButtonDown += OnButtonDown;
-            _controller = MLInput.GetController(MLInput.Hand.Left);
 
+            _controller = MLInput.GetController(MLInput.Hand.Left);
             setOscStatus();
         }
 
+
+        /// <summary>
+        /// Handle bumper button behaviour
+        /// </summary>
+        /// <param name="controllerId"></param>
+        /// <param name="button"></param>
         private void OnButtonDown(byte controllerId, MLInput.Controller.Button button)
         {
             print("Button pressed");
             if (button == MLInput.Controller.Button.Bumper)
             {
                 print("Bumper pressed");
-                setDestinations();
+                issueNavigationRequest();
             }
-            
         }
 
         private void Update()
         {
-            if(test)
+            if(testIssueNavigation)
             {
-                test = false;
-                setDestinations();
+                testIssueNavigation = false;
+                issueNavigationRequest();
             }
             checkTrigger();
         }
 
-
+        /// <summary>
+        /// Handle controllers trigger/touchpad button and send a message to stop the test
+        /// </summary>
         private void checkTrigger()
         {
+            /* !! NOTE !! Ignore null reference warning here if in editor mode. 
+             * This script is set to be executable in Editor for debugging purposes. 
+             * When deployed on ML this error does not appear anymore because the controller is available */
             if (_controller.TriggerValue > 0.2f)
             {
                 print("Trigger pressed");
@@ -119,8 +142,7 @@ namespace SP {
                 }
             }
 
-            if (_controller.Touch1PosAndForce.z > 0.0f)
-            {
+            if (_controller.Touch1PosAndForce.z > 0.0f) {
                 print("Touchpad pressed");
                 PositionSender.sendUpdates = true;
             }
@@ -129,12 +151,14 @@ namespace SP {
 
         private void OnDestroy() {
             OscReceiveHandler.OnDestinationsReceived -= OscReceiveHandler_OnDestinationsReceived;
-            OscReceiveHandler.OnNavigationReceived -= OscReceiveHandler_OnNavigationReceived;
             #if UNITY_LUMIN
             MLInput.OnControllerButtonDown -= OnButtonDown;
             #endif
         }
 
+        /// <summary>
+        /// Toggles the panel on/off. Not used..
+        /// </summary>
         private void togglePanel() {
             // Put the panel 1m infront of the user
             gameObject.transform.position = Camera.main.transform.position
@@ -157,11 +181,10 @@ namespace SP {
                                                 trans.RemotePort);
         }
 
-
-        private void OscReceiveHandler_OnNavigationReceived(OscReceiveHandler.oscArgs args) {
-            // Handle navigation
-            print(args.msg);
-        }
+        /// <summary>
+        /// To be used for displaying destionatios on the UI. Not used..
+        /// </summary>
+        /// <param name="args"></param>
         private void OscReceiveHandler_OnDestinationsReceived(OscReceiveHandler.oscArgs args) {
             // Clear children to prevent double objects
             foreach (Transform child in navigationItems.transform)
@@ -205,20 +228,23 @@ namespace SP {
             }
         }
 
+        
         public void issueNavigation() {
-            // Reinitialize toggles if there are none..
-            if(destToggles.Count == 0){
-                OSCSender.sendString(Constants.OSC_GET_DEST, "true");
-                return;
-            }
+            //DEPRECATED
 
-            var outputDestinations = new List<string>();
-            foreach (var dest in destToggles) {
-                if (dest.isOn) {
-                    outputDestinations.Add(dest.gameObject.name);
-                }
-            }
-            OSCSender.sendList(Constants.OSC_SET_DEST, outputDestinations);
+            //// Reinitialize toggles if there are none..
+            //if(destToggles.Count == 0){
+            //    OSCSender.sendString(Constants.OSC_GET_DEST, "true");
+            //    return;
+            //}
+
+            //var outputDestinations = new List<string>();
+            //foreach (var dest in destToggles) {
+            //    if (dest.isOn) {
+            //        outputDestinations.Add(dest.gameObject.name);
+            //    }
+            //}
+            //OSCSender.sendList(Constants.OSC_SET_DEST, outputDestinations);
         }
 
     
@@ -267,6 +293,10 @@ namespace SP {
             NetworkManagerTCP.Instance.disconnectTcp();
         }
 
+        /// <summary>
+        /// Get IP and port as a tuple
+        /// </summary>
+        /// <returns></returns>
         public Tuple<string, int> getEndPoint() {
             var endPoint = _mEndPoint.text.Split(':');
             var ip = endPoint[0];
@@ -275,6 +305,10 @@ namespace SP {
             return new Tuple<string, int>(ip, port);
         }
 
+        /// <summary>
+        /// Utility for changing UI views.. not used
+        /// </summary>
+        /// <param name="viewName"></param>
         public void changeView(string viewName)
         {
             foreach (var item in views) {
@@ -285,11 +319,12 @@ namespace SP {
             }
         }
 
-        public void setDestinations()
-        {
-      
+
+        public void issueNavigationRequest() {
+
+            // Get user's location relative to global origin
             var startLocation = TransformConversions.posRelativeTo(GlobalOrigin.getTransform(), _mUser.transform);
-            startLocation = TransformConversions.invertAxisZ(startLocation);
+            startLocation = TransformConversions.invertAxisZ(startLocation); // invert Z axis to convert to OpenGL coords
             var destination = dest1.ToString();
             var destination2 = dest2.ToString();
             var destination3 = dest3.ToString();
@@ -299,7 +334,7 @@ namespace SP {
             print("User position: " + _mUser.transform.position);
             print("Relative position: " + startLocation);
 
-
+            // Prepare the OSC message and send it off
             var msg = new OSCMessage(Constants.OSC_SET_DEST);
             msg.AddValue(OSCValue.String(startLocation.ToString()));
             msg.AddValue(OSCValue.String(destination));

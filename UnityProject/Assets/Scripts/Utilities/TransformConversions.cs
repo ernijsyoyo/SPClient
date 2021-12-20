@@ -31,6 +31,11 @@ namespace SP
         /// <returns></returns>
         public static Vector3 posRelativeTo(Transform _pivot, Transform _origin)
         {
+            if(_pivot == null || _origin == null)
+            {
+                Debug.LogError("Either pivot or origin is null. Please check the function inputs." +
+                    "If debuggin in Editor, navigate to GlobalOrigin game object and set the origin via inspector boolean");
+            }
             return _pivot.InverseTransformPoint(_origin.position);
         }
 

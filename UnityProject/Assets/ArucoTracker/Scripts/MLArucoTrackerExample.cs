@@ -9,6 +9,8 @@
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
+
+// Modifications by Ernests Lavrinovics AAU 2021
 namespace MagicLeap
 {
     using System.Collections.Generic;

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace SP
 {
+    /// <summary>
+    /// Send out user position during each fixed update for logging purposes
+    /// </summary>
     public class PositionSender : MonoBehaviour
     {
 
@@ -18,6 +21,11 @@ namespace SP
             OscReceiveHandler.OnDestinationsReceived -= GlobalOrigin_OnOrientationSet;
         }
 
+        /// <summary>
+        /// Event to flip the bool once we have received the destinations.
+        /// This allows us to ensure correct starting of test start-time logging
+        /// </summary>
+        /// <param name="args"></param>
         private void GlobalOrigin_OnOrientationSet(System.EventArgs args) {
             sendUpdates = true;
             print("Sending position updates..");
