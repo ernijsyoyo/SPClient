@@ -5,6 +5,9 @@ using System;
 using System.Xml.Linq;
 using SP;
 
+/// <summary>
+/// Class for visualizing a mesh from and XML file.. used only between 3AM-5AM for debugging purposes :)
+/// </summary>
 [ExecuteInEditMode]
 public class MeshVisualizer : MonoBehaviour
 {
@@ -34,7 +37,7 @@ public class MeshVisualizer : MonoBehaviour
     }
 
     private XDocument getXMLDocument() {
-        string filepath = "../savedFile_224024.xml";
+        string filepath = "../LAB_AAU_AR.xml";
         return XDocument.Load(filepath);;
     }
 
@@ -50,10 +53,6 @@ public class MeshVisualizer : MonoBehaviour
             go.transform.parent = GlobalOrigin.getTransform();
             go.transform.localPosition = markerPos;
             go.name = id.Value;
-
-            //var endPos = TransformConversions.posRelativeTo(GlobalOrigin.getTransform(), go.transform);
-            //print(endPos);
-            //go.transform.position = new Vector3(endPos.x, endPos.y, endPos.z) *-1;
         }
     }
 
